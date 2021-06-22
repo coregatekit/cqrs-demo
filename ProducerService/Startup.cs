@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ProducerService.DbContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,7 +11,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using ProducerService.Repositories;
+using ProducerService.Services;
 
 namespace ProducerService
 {
@@ -26,6 +30,12 @@ namespace ProducerService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AccountDbSettings>(Configuration.GetSection("AccountDbSettings"));
+            services.AddSingleton<IAccountDbSettings>(_ => _.GetRequiredService<IOptions<AccountDbSettings>>().Value);
+
+            services.AddSingleton<IAccountRepository, AccountRepository>();
+            services.AddSingleton<IAccountService, AccountService>();
+            services.AddHttpClient<IConsumerService, ConsumerService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -43,8 +53,6 @@ namespace ProducerService
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProducerService v1"));
             }
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
