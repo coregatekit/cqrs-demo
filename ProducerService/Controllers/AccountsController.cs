@@ -34,9 +34,9 @@ namespace ProducerService.Controllers
                 await _accountService.Deposit(accountNumber, accountRequest);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest();
+                return BadRequest(e);
             }
         }
 
@@ -48,9 +48,9 @@ namespace ProducerService.Controllers
                 await _accountService.Withdraw(accountNumber, accountRequest);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return BadRequest();
+                return BadRequest(e);
             }
         }
     }

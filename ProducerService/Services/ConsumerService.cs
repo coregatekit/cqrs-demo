@@ -25,7 +25,7 @@ namespace ProducerService.Services
 
         public async Task<AccountResponse> GetAccount(string accountNumber)
         {
-            var httpResponse = await Client.GetAsync($"{ConsumerServiceUrl}/{accountNumber}");
+            var httpResponse = await Client.GetAsync($"{ConsumerServiceUrl}/api/Accounts/{accountNumber}");
             httpResponse.EnsureSuccessStatusCode();
             var content = await httpResponse.Content.ReadAsStringAsync();
 

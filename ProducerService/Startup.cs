@@ -35,6 +35,7 @@ namespace ProducerService
             services.Configure<AccountDbSettings>(Configuration.GetSection("AccountDbSettings"));
             services.AddSingleton<IAccountDbSettings>(_ => _.GetRequiredService<IOptions<AccountDbSettings>>().Value);
             services.Configure<KafkaConfiguration>(Configuration.GetSection("KafkaConfigs"));
+            services.Configure<ServiceAddressConfiguration>(Configuration.GetSection("ServiceAddress"));
 
             services.AddSingleton<IAccountRepository, AccountRepository>();
             services.AddSingleton<IAccountService, AccountService>();
