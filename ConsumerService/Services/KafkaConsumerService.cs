@@ -61,39 +61,46 @@ namespace ConsumerService.Services
 
         private async void OnReceivedMessage(ConsumeResult<Ignore, string> consume)
         {
-            var result = JsonConvert.DeserializeObject<ConsumerAccountRequest>(consume.Message.Value);
-            if (result.Action == ActionEnum.OPEN_ACCOUNT.ToString())
+            try
             {
-                var account = new CreateAccountRequest
+                var result = JsonConvert.DeserializeObject<ConsumerAccountRequest>(consume.Message.Value);
+                if (result.Action == ActionEnum.OPEN_ACCOUNT.ToString())
                 {
-                    AccountNumber = result.Number,
-                    AccountName = result.Name,
-                    Amount = result.Amount,
-                    UpdateDate = result.UpdateLog
-                };
-                await _accountService.CreateAccount(account);
+                    var account = new CreateAccountRequest
+                    {
+                        AccountNumber = result.Number,
+                        AccountName = result.Name,
+                        Amount = result.Amount,
+                        UpdateDate = result.UpdateLog
+                    };
+                    await _accountService.CreateAccount(account);
+                }
+                if (result.Action == ActionEnum.DEPOSIT.ToString())
+                {
+                    var account = new UpdateAccountRequest
+                    {
+                        AccountNumber = result.Number,
+                        Amount = result.Amount,
+                        Action = result.Action,
+                        UpdateDate = result.UpdateLog
+                    };
+                    await _accountService.UpdateAccount(account);
+                }
+                if (result.Action == ActionEnum.WITHDRAW.ToString())
+                {
+                    var account = new UpdateAccountRequest
+                    {
+                        AccountNumber = result.Number,
+                        Amount = result.Amount,
+                        Action = result.Action,
+                        UpdateDate = result.UpdateLog
+                    };
+                    await _accountService.UpdateAccount(account);
+                }
             }
-            if (result.Action == ActionEnum.DEPOSIT.ToString())
+            catch (Exception e)
             {
-                var account = new UpdateAccountRequest
-                {
-                    AccountNumber = result.Number,
-                    Amount = result.Amount,
-                    Action = result.Action,
-                    UpdateDate = result.UpdateLog
-                };
-                await _accountService.UpdateAccount(account);
-            }
-            if (result.Action == ActionEnum.WITHDRAW.ToString())
-            {
-                var account = new UpdateAccountRequest
-                {
-                    AccountNumber = result.Number,
-                    Amount = result.Amount,
-                    Action = result.Action,
-                    UpdateDate = result.UpdateLog
-                };
-                await _accountService.UpdateAccount(account);
+                Console.WriteLine(e);
             }
         }
     }
