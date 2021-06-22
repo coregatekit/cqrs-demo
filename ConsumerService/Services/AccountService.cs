@@ -26,10 +26,10 @@ namespace ConsumerService.Services
         public async Task<Account> CreateAccount(CreateAccountRequest accountRequest)
         {
             var account = new Account();
-            account.Number = Guid.NewGuid().ToString();
+            account.Number = accountRequest.AccountNumber;
             account.Name = accountRequest.AccountName;
             account.Amount = accountRequest.Amount;
-            account.UpdateDate = DateTime.Now;
+            account.UpdateDate = accountRequest.UpdateDate;
             return await _accountRepository.CreateAccount(account);
         }
 
@@ -46,7 +46,7 @@ namespace ConsumerService.Services
         public async Task UpdateAccount(UpdateAccountRequest accountRequest)
         {
             var account = await _accountRepository.GetAccount(accountRequest.AccountNumber);
-            account.UpdateDate = DateTime.Now;
+            account.UpdateDate = account.UpdateDate;
             if (accountRequest.Action == ActionEnum.DEPOSIT.ToString())
             {
                 account.Amount += accountRequest.Amount;

@@ -1,3 +1,5 @@
+using System;
+
 namespace ConsumerService.Models.Request
 {
     public class UpdateAccountRequest
@@ -5,5 +7,6 @@ namespace ConsumerService.Models.Request
         public string AccountNumber { get; set; }
         public decimal Amount { get; set; }
         public string Action { get; set; }
+        public DateTime UpdateDate { get; set; }
     }
 }
