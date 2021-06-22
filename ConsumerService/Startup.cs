@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ConsumerService.DbContext;
+using ConsumerService.Models.Configuration;
 using ConsumerService.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -32,9 +33,12 @@ namespace ConsumerService
 
             services.Configure<AccountDbSettings>(Configuration.GetSection("AccountDbSettings"));
             services.AddSingleton<IAccountDbSettings>(_ => _.GetRequiredService<IOptions<AccountDbSettings>>().Value);
-            
+            services.Configure<KafkaConfiguration>(Configuration.GetSection("KafkaConfigs"));
+
             services.AddSingleton<IAccountRepository, AccountRepository>();
             services.AddSingleton<IAccountService, AccountService>();
+
+            services.AddHostedService<KafkaConsumerService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

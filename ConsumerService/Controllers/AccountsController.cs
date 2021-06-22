@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace ConsumerService.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
         private readonly ILogger<AccountsController> _logger;
