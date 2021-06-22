@@ -8,7 +8,7 @@ using ProducerService.Services;
 namespace ProducerService.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AccountsController : ControllerBase
     {
         private readonly ILogger<AccountsController> _logger;

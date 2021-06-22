@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using ProducerService.Models;
 using ProducerService.Models.Request;
 using ProducerService.Repositories;
+using ProducerService.Services.Producer;
+using System.Text.Json;
 
 namespace ProducerService.Services
 {
@@ -17,14 +19,16 @@ namespace ProducerService.Services
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IConsumerService _consumerSerivce;
+        private readonly KafkaProducerService _producer;
 
-        public AccountService(IAccountRepository accountRepository, IConsumerService consumerService)
+        public AccountService(IAccountRepository accountRepository, IConsumerService consumerService, KafkaProducerService producer)
         {
             _accountRepository = accountRepository;
             _consumerSerivce = consumerService;
+            _producer = producer;
         }
 
-        public Task<Account> CreateAccount(CreateAccountRequest accountRequest)
+        public async Task<Account> CreateAccount(CreateAccountRequest accountRequest)
         {
             var account = new Account();
             account.TransactionNumber = Guid.NewGuid().ToString();
@@ -34,7 +38,9 @@ namespace ProducerService.Services
             account.Action = ActionEnum.OPEN_ACCOUNT.ToString();
             account.UpdateLog = DateTime.Now;
 
-            return _accountRepository.CreateAccount(account);
+            await _accountRepository.CreateAccount(account);
+            _producer.produceToKakfa(JsonSerializer.Serialize(account));
+            return account;
         }
 
         public async Task Deposit(string accountNumber, UpdateAccountRequest accountRequest)
@@ -51,6 +57,7 @@ namespace ProducerService.Services
                 account.UpdateLog = DateTime.Now;
 
                 await _accountRepository.Deposit(account);
+                _producer.produceToKakfa(JsonSerializer.Serialize(account));
             }
             catch (Exception)
             {
@@ -72,6 +79,7 @@ namespace ProducerService.Services
                 account.UpdateLog = DateTime.Now;
 
                 await _accountRepository.Deposit(account);
+                _producer.produceToKakfa(JsonSerializer.Serialize(account));
             }
             catch (Exception)
             {

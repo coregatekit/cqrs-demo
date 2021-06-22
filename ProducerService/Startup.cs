@@ -15,6 +15,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using ProducerService.Repositories;
 using ProducerService.Services;
+using ProducerService.Models.Configuration;
+using ProducerService.Services.Producer;
 
 namespace ProducerService
 {
@@ -32,9 +34,11 @@ namespace ProducerService
         {
             services.Configure<AccountDbSettings>(Configuration.GetSection("AccountDbSettings"));
             services.AddSingleton<IAccountDbSettings>(_ => _.GetRequiredService<IOptions<AccountDbSettings>>().Value);
+            services.Configure<KafkaConfiguration>(Configuration.GetSection("KafkaConfigs"));
 
             services.AddSingleton<IAccountRepository, AccountRepository>();
             services.AddSingleton<IAccountService, AccountService>();
+            services.AddSingleton<KafkaProducerService>();
             services.AddHttpClient<IConsumerService, ConsumerService>();
 
             services.AddControllers();
