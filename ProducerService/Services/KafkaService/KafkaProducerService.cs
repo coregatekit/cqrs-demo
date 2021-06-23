@@ -14,7 +14,8 @@ namespace ProducerService.Services.Producer
         {
             config = new ProducerConfig
             {
-                BootstrapServers = kafkaConfig.Value.Host
+                BootstrapServers = kafkaConfig.Value.Host,
+                Acks = Acks.All
             };
             topic = kafkaConfig.Value.Topic;
         }
