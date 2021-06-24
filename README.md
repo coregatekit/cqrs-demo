@@ -1,1 +1,1 @@
-# cqrs-demo
+# kafka-demo
