@@ -28,6 +28,8 @@ namespace ProducerService.Services.Producer
                 {
                     producer.ProduceAsync(topic, new Message<Null, string> { Value = message });
                     Console.WriteLine($"Produce message {message} to topic {topic}");
+
+                    producer.Flush(TimeSpan.FromSeconds(10));
                 }
                 catch (Exception e)
                 {
